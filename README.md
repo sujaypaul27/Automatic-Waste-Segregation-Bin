@@ -19,27 +19,26 @@
 
 ---
 
-## 🌟 Key Highlights & Engineering Features
+## 🌟 Key Features & Engineering Design
 
-- **Multi-Sensor Fusion**: Combines **Inductive Proximity**, **Resistive Moisture**, and **Infrared (IR)** detection for rapid, reliable material classification.
+- **Multi-Sensor Fusion**: Combines an **Inductive Proximity Sensor**, **Resistive Moisture Sensor**, and **Infrared (IR) Sensor** for rapid, automated material classification.
 - **Hierarchical Priority Classification**: Intelligently prioritizes metal detection before moisture analysis to avoid misclassifying wet metallic cans.
 - **Dual-Servo Automated Routing**:
-  - **Selector Servo**: Rotates the discharge chute or carousel to align with the correct target compartment.
+  - **Selector Servo**: Rotates the discharge chute or carousel to align directly with the designated compartment.
   - **Drop Flap Servo**: Actuates the chamber trapdoor to release waste cleanly under gravity.
-- **Robust Finite State Machine (FSM)**: Architecture prevents race conditions, jitter, and unexpected resets.
+- **Finite State Machine (FSM) Firmware**: Prevents race conditions, jitter, and unexpected resets.
 - **Analog Noise Filtering**: 10-sample moving average filter on moisture readings eliminates false positives from static charge and erratic surface contact.
-- **Audio-Visual Feedback**: Dynamic buzzer tone sequences and multi-color LED indicators signal system states and real-time classification decisions.
-- **Interview & Resume Ready**: Includes complete schematics, calibration tools, and interview discussion scripts.
+- **Audio-Visual Indicators**: Dynamic buzzer tone sequences and multi-color LED indicators signal system states and real-time classification decisions.
 
 ---
 
-## ❓ Problem Statement & Motivation
+## ❓ Problem Solved by the Project
 
-According to municipal solid waste studies, **over 70% of recyclable materials end up in landfills** due to source cross-contamination. 
+In traditional waste disposal, all types of waste—such as food scraps, paper, plastic, and beverage cans—are thrown into a common bin. 
 
-1. **Hazardous Manual Sorting**: Workers manually hand-pick through mixed waste, exposing themselves to pathogen infections, sharp metals, and toxic chemical leachates.
-2. **Loss of Recyclability**: Organic wet waste ruins dry paper and cardboard, making recycling economically unviable.
-3. **The Solution**: An autonomous, touchless segregation bin installed in public spaces, offices, and households that separates waste **immediately at entry** before cross-contamination can occur.
+1. **Hygiene & Safety**: Sanitation workers must separate waste manually, exposing them to pathogens, sharp metals, and toxic chemical leachates.
+2. **Loss of Recyclability**: Organic wet waste degrades dry paper and cardboard, making clean recycling difficult or impossible.
+3. **Automated Solution**: This project automates separation directly at the point of disposal. Waste is classified immediately upon insertion and directed into its respective compartment before cross-contamination can occur.
 
 ---
 
@@ -70,22 +69,33 @@ flowchart TD
     N --> O([System Ready for Next Cycle])
 ```
 
+1. **Detection**: An object is placed into the upper collection hopper and detected by an IR proximity sensor.
+2. **Settling**: The system pauses for 1.5 seconds to allow the item to come to a complete rest on the sensing platform.
+3. **Classification**:
+   - **Metal Check**: If the inductive sensor triggers, the waste is marked as **Metal**.
+   - **Moisture Check**: If metal is absent, the analog moisture sensor reads conductivity. Readings below the threshold indicate **Wet / Organic Waste**.
+   - **Dry Waste Default**: Non-metallic, low-conductivity items (paper, cardboard, plastic) are classified as **Dry Waste**.
+4. **Segregation & Actuation**:
+   - The selector servo turns the guide chute to the target container.
+   - The drop flap servo opens the trapdoor, allowing the item to fall cleanly.
+   - The trapdoor closes, and the selector servo returns to standby.
+
 ---
 
-## 🛠️ Hardware Components & Bill of Materials (BOM)
+## 🛠️ Hardware Components & Specifications
 
-| Component | Specification | Quantity | Primary Function |
+| Component | Specification | Quantity | Function |
 | :--- | :--- | :---: | :--- |
-| **Microcontroller** | Arduino Uno R3 / ATmega328P | 1 | Executes FSM logic, reads sensors, and drives PWM servos |
-| **Metal Sensor** | LJ12A3-4-Z/BX Inductive Proximity (NPN NO) | 1 | Detects ferrous and non-ferrous metallic objects (range: 4–8mm) |
-| **Moisture Sensor** | Resistive Soil/Raindrop Conductivity Probe | 1 | Measures water/moisture content to identify wet organic waste |
-| **Object Sensor** | Active-Low IR Obstacle Proximity Module | 1 | Detects placement of waste in intake hopper to initiate cycle |
-| **Chute Actuator** | MG995 / TowerPro SG90 High-Torque Servo | 1 | Rotates the diverter chute to Dry (30°), Wet (90°), or Metal (150°) |
-| **Flap Actuator** | TowerPro SG90 Micro Servo | 1 | Opens and closes the trapdoor beneath the sensing chamber |
-| **Audio Feedback** | 5V Piezo Buzzer | 1 | Emits distinct diagnostic and classification confirmation beeps |
-| **Visual Indicators**| 5mm LEDs (Green, Yellow, Red, Blue) + 220Ω Resistors | 4 | Real-time status and category identification |
-| **Power Supply** | 2x 18650 Li-ion Batteries (7.4V) + LM2596 Buck Step-Down | 1 | High-current dual-rail supply for Arduino logic and servo rails |
-| **Chassis / Frame** | PVC Pipe Arm, Cylindrical Hoppers, Wooden Baseboard | 1 | Structural framework and waste holding compartments |
+| **Microcontroller** | Arduino Uno R3 (ATmega328P) | 1 | Processes sensor signals and coordinates servo movements |
+| **Metal Sensor** | LJ12A3-4-Z/BX Inductive Proximity (NPN NO) | 1 | Detects metallic objects in the intake chamber |
+| **Moisture Sensor** | Resistive Soil/Raindrop Conductivity Probe | 1 | Measures moisture/water content to detect wet waste |
+| **Object Sensor** | Active-Low IR Obstacle Proximity Module | 1 | Detects the entry of waste into the hopper |
+| **Chute Actuator** | MG995 / TowerPro SG90 Servo | 1 | Aligns the chute to Dry (30°), Wet (90°), or Metal (150°) |
+| **Flap Actuator** | TowerPro SG90 Micro Servo | 1 | Opens and closes the chamber trapdoor |
+| **Audio Feedback** | 5V Piezo Buzzer | 1 | Provides distinct audio tones for each waste type |
+| **Visual Indicators**| 5mm LEDs (Green, Yellow, Red, Blue) + 220Ω | 4 | Indicates power, busy state, and classified waste type |
+| **Power Supply** | 2x 18650 Li-ion Batteries (7.4V) + Buck Converter | 1 | Provides stable power for both the microcontroller and servos |
+| **Structure** | PVC Pipe Arm, Cylindrical Hoppers, Wooden Baseboard | 1 | Physical frame and waste holding compartments |
 
 ---
 
@@ -94,17 +104,17 @@ flowchart TD
 | Sensor / Module | Signal Pin | Arduino Pin | Description |
 | :--- | :--- | :--- | :--- |
 | **IR Proximity Sensor** | OUT | `D2` | Waste entry trigger |
-| **Inductive Metal Sensor** | Black (Signal) | `D3` | Metal detection (NPN Open Collector / Divider) |
+| **Inductive Metal Sensor** | Black (Signal) | `D3` | Metal detection |
 | **Moisture Sensor** | A0 (Analog) | `A0` | Conductivity reading (0 = Wet, 1023 = Dry) |
 | **Moisture Sensor** | D0 (Digital) | `D4` | Hardware threshold trigger (optional) |
 | **Selector Servo** | PWM Signal | `D9` | 3-way chute alignment |
 | **Drop Flap Servo** | PWM Signal | `D10` | Hopper trapdoor actuator |
 | **Piezo Buzzer** | Positive (+) | `D6` | System audio alerts |
-| **Metal Indicator LED**| Anode (+) | `D5` | Lights up when metal is sorted |
-| **Wet Indicator LED** | Anode (+) | `D7` | Lights up when organic wet waste is sorted |
-| **Dry Indicator LED** | Anode (+) | `D8` | Lights up when dry recyclable is sorted |
+| **Metal Indicator LED**| Anode (+) | `D5` | Metal waste status indicator |
+| **Wet Indicator LED** | Anode (+) | `D7` | Wet waste status indicator |
+| **Dry Indicator LED** | Anode (+) | `D8` | Dry waste status indicator |
 
-> 📖 **Full Schematic & Power Isolation Details:** See [docs/CIRCUIT_DIAGRAM.md](docs/CIRCUIT_DIAGRAM.md)
+> 📖 **Wiring & Electrical Details:** See [docs/CIRCUIT_DIAGRAM.md](docs/CIRCUIT_DIAGRAM.md)
 
 ---
 
@@ -119,7 +129,6 @@ Automatic-Waste-Segregation-Bin/
 ├── docs/
 │   ├── CIRCUIT_DIAGRAM.md             # Complete wiring tables, power distribution & isolation
 │   ├── CALIBRATION_GUIDE.md           # Sensor threshold tuning and servo angle calibration
-│   ├── INTERVIEW_PREP.md              # Technical Q&A, talking points & resume bullets
 │   └── IOT_EXPANSION_GUIDE.md         # ESP32 / Blynk cloud telemetry & smart city integration
 │
 ├── src/
@@ -138,49 +147,46 @@ Automatic-Waste-Segregation-Bin/
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Setup & Execution Guide
 
-### 1. Prerequisites
-- [Arduino IDE](https://www.arduino.cc/en/software) (version 1.8.x or 2.x)
-- Arduino Uno / Nano connected via USB cable
-- Standard `Servo.h` library (bundled with Arduino IDE)
+### 1. Requirements
+- [Arduino IDE](https://www.arduino.cc/en/software)
+- Arduino Uno / Nano connected via USB
+- Built-in `Servo.h` library
 
-### 2. Installation & Uploading
+### 2. Flashing the Firmware
 1. Clone this repository:
    ```bash
    git clone https://github.com/sujaypaul27/Automatic-Waste-Segregation-Bin.git
    cd Automatic-Waste-Segregation-Bin
    ```
-2. Open `src/automatic_waste_segregator/automatic_waste_segregator.ino` in Arduino IDE.
-3. Select your board: **Tools > Board > Arduino Uno** (or Nano).
-4. Select the matching Port: **Tools > Port > COMx**.
+2. Open `src/automatic_waste_segregator/automatic_waste_segregator.ino` in the Arduino IDE.
+3. Select your board from **Tools > Board > Arduino Uno** (or Nano).
+4. Select the corresponding port from **Tools > Port**.
 5. Click **Upload** (Ctrl + U).
 
-### 3. Verification & Live Monitoring
+### 3. Operating the Bin
 1. Open the Serial Monitor (**Tools > Serial Monitor**) at **9600 baud**.
-2. Place a waste item (e.g. tomato slice, aluminum can, paper sheet) into the upper hopper.
-3. Observe live sensor logging, classification decisions, and servo actuation.
+2. Drop an item into the top intake hopper.
+3. The system detects the item, samples the sensors, announces the classification over the serial monitor, and actuates the servos to drop the item into the matching bin.
 
 ---
 
-## 🎯 Interview & Resume Talking Points
+## ⚙️ Calibration
 
-Putting this project on your resume? Here is how to speak about it with authority:
+Sensor threshold values and servo angles can be customized in [`src/automatic_waste_segregator/config.h`](src/automatic_waste_segregator/config.h):
+- `MOISTURE_WET_THRESHOLD`: Adjust to calibrate the sensitivity boundary between wet and dry items.
+- `ANGLE_BIN_DRY`, `ANGLE_BIN_WET`, `ANGLE_BIN_METAL`: Adjust to align with your physical bin layout.
 
-- **State Machine Architecture**: *"I structured the firmware as a Finite State Machine (FSM) rather than blocking procedural code, allowing clean error recovery, servo speed damping, and noise filtering."*
-- **Hierarchical Classification Rationale**: *"I programmed the logic to check metal before moisture. A wet metallic beverage can contains moisture, but its high recycling and non-compostable properties require it to be routed to the metal bin."*
-- **Power Management**: *"Servos produce sudden current spikes up to 1A. I engineered an isolated power distribution scheme with a common reference ground, preventing Arduino brownouts."*
-
-> 💼 **Comprehensive Interview Guide with 10+ Technical Q&As:** See [docs/INTERVIEW_PREP.md](docs/INTERVIEW_PREP.md)
+> 📖 **Step-by-step calibration guide:** See [docs/CALIBRATION_GUIDE.md](docs/CALIBRATION_GUIDE.md)
 
 ---
 
-## 🔮 Future Roadmap & Upgrades
+## 🔮 Future Scope & Improvements
 
-- [ ] **Capacitive Proximity Sensor**: Distinguish between plastics and non-plastic dry waste.
-- [ ] **Ultrasonic Bin Fill-Level Telemetry**: Alert municipal services when individual bins reach 90% capacity.
-- [ ] **Edge AI Vision (ESP32-CAM)**: Lightweight neural network model to classify complex recyclables (PET, e-waste, glass).
-- [ ] **Solar Power Harvesting**: Add solar panel and charge controller for standalone public outdoor operation.
+- **Capacitive Proximity Sensor**: To identify non-metallic materials such as pure plastic vs paper.
+- **Ultrasonic Level Detection**: To track the fill-level of each compartment and signal when full.
+- **IoT Cloud Dashboard**: Wi-Fi connectivity via ESP32/ESP8266 to upload bin status to a municipal monitoring interface.
 
 ---
 
@@ -194,4 +200,4 @@ Putting this project on your resume? Here is how to speak about it with authorit
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE) - feel free to use, modify, and build upon it for academic and open-source projects.
+This project is licensed under the [MIT License](LICENSE).
