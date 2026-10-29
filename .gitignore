@@ -1,0 +1,27 @@
+# Compiled binaries & build artifacts
+*.hex
+*.elf
+*.bin
+*.o
+*.a
+*.s
+*.ko
+*.so
+*.dylib
+*.exe
+
+# Arduino IDE temporary directories & PlatformIO
+build/
+.pio/
+.pioenvs/
+.piolibdeps/
+.clangd/
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
