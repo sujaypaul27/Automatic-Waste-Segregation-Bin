@@ -6,7 +6,7 @@ Follow this step-by-step guide to calibrate your system.
 
 ---
 
-## 1. Moisture Sensor Calibration
+## 1. Moisture Sensor Calibration:
 
 The moisture sensor measures electrical conductivity between two conductive probes. High moisture content (water, fruit juices, food scraps) increases conductivity, resulting in a lower analog resistance reading.
 
