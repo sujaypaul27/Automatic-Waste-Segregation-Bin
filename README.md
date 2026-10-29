@@ -10,7 +10,7 @@
 
 ---
 
-## 📸 Physical Prototype Showcase
+## 📸 Physical Prototype Showcase:
 
 <div align="center">
   <img src="assets/project_prototype.png" alt="Automatic Waste Segregation Bin Hardware Prototype" width="850px" style="border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
